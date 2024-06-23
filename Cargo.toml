@@ -1,0 +1,8 @@
+[package]
+name = "kleio-rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+base62 = "2.0.2"
+rand = "0.8.5"
