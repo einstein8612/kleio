@@ -12,7 +12,7 @@ pub fn now() -> SystemTime {
 
 ///
 /// Generate a new key
-/// 
+///
 /// This function generates a new key using the algorithm outlined in [`generate_id`] and then encodes it
 /// using base62 encoding, to display it as a string. This function is meant to be used when generating
 /// keys for external use like in urls.
@@ -55,7 +55,12 @@ pub fn generate_id() -> u64 {
 ///
 pub fn generate_id_from_rng(rng: &mut impl Rng) -> u64 {
     let entropy = (rng.next_u32() as u64) << 48;
-    let ms_since_epoch = ((now().duration_since(UNIX_EPOCH + KLEIO_EPOCH_SINCE_UNIX_EPOCH).unwrap().as_millis() as u64) << 16) >> 16;
+    let ms_since_epoch = ((now()
+        .duration_since(UNIX_EPOCH + KLEIO_EPOCH_SINCE_UNIX_EPOCH)
+        .unwrap()
+        .as_millis() as u64)
+        << 16)
+        >> 16;
 
     entropy | ms_since_epoch
 }
@@ -66,7 +71,7 @@ pub mod mock_time {
     use std::cell::RefCell;
 
     thread_local! {
-        static MOCK_TIME: RefCell<Option<SystemTime>> = RefCell::new(None);
+        static MOCK_TIME: RefCell<Option<SystemTime>> = const { RefCell::new(None) };
     }
 
     pub fn now() -> SystemTime {
@@ -102,10 +107,17 @@ mod tests {
         // Set mock random to 1
         let mut step_rng = StepRng::new(0b1011001110001111, 1);
         // Set mock time to 0b1010101 milliseconds after the epoch
-        set_mock_time(UNIX_EPOCH + KLEIO_EPOCH_SINCE_UNIX_EPOCH + Duration::from_millis(0b010011000111000111100001111100000111111000000111));
+        set_mock_time(
+            UNIX_EPOCH
+                + KLEIO_EPOCH_SINCE_UNIX_EPOCH
+                + Duration::from_millis(0b010011000111000111100001111100000111111000000111),
+        );
 
         let id = generate_id_from_rng(&mut step_rng);
-        assert_eq!(id, 0b1011001110001111010011000111000111100001111100000111111000000111);
+        assert_eq!(
+            id,
+            0b1011001110001111010011000111000111100001111100000111111000000111
+        );
     }
 
     #[test]
