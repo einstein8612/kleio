@@ -1,7 +1,13 @@
 [package]
 name = "kleio-rs"
+description = "A simple, seemingly random, key generator written in Rust"
 version = "0.1.0"
 edition = "2021"
+documentation = "https://docs.rs/kleio-rs"
+homepage = "https://github.com/einstein8612/kleio"
+repository = "https://github.com/einstein8612/kleio"
+
+license = "MIT"
 
 [dependencies]
 base62 = "2.0.2"
